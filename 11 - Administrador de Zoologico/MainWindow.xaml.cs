@@ -117,5 +117,65 @@ namespace _11___Administrador_de_Zoologico
             // Llenar el ListBox de Animales en Zoológico
             MostrarAnimalesZoologico();
         }
+        private void BtnEliminarZoologico_Click(object sender, RoutedEventArgs e)
+        {
+            if (lbZoologicos.SelectedValue == null)
+                MessageBox.Show("Debes selecionar un zoo");
+            else
+            {
+                try
+                {
+                    string query = "DELETE FROM Zoo.Zoologico WHERE id=@zooId";
+                    SqlCommand sqlCommand = new SqlCommand(query, sqlconnection);
+                    //Abrir la conexion
+                    sqlconnection.Open();
+                    //Agregar el parametro
+                    sqlCommand.Parameters.AddWithValue("@zooId", lbZoologicos.SelectedValue);
+                    //Ejecutar un query scalar 
+                    sqlCommand.ExecuteScalar();
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.ToString());
+                }
+                finally
+                {
+                    sqlconnection.Close();
+                    MostrarZoologicos();
+                }
+            }
+
+        }
+
+        private void BtnAgregarZoologico_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string query = "INSERT INTO Zoo.Zoologico(ciudad) VALUES(@ciudad)";
+                SqlCommand sqlCommand = new SqlCommand(query, sqlconnection);
+                //Abrir conexion
+                sqlconnection.Open();
+                //remplazar el parametro con su valor respectivo
+                sqlCommand.Parameters.AddWithValue("@ciudad", txtInformacion.Text);
+                //Ejecutamos query de insersion
+                sqlCommand.ExecuteScalar();
+                //Limpiar el valor del texto en txtinformacion
+                txtInformacion.Text = string.Empty;
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                sqlconnection.Close();
+                //Actualizar el Listbox de zoologicos
+                MostrarZoologicos();
+            }
+
+        }
     }
+}
 }
